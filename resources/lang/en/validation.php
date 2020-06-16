@@ -153,7 +153,8 @@ return [
         'password_confirmation' => 'Confirmar contraseña',
         'names' => 'Nombre completo',
         'first_name' => 'Nombres',
-        'last_name' => 'Apellidos'
+        'last_name' => 'Apellidos',
+        'file' => 'Archivo'
     ],
 
 ];

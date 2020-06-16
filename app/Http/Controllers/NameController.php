@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\NameFormRequest;
 use GuzzleHttp\Client;
 use Session;
+
+use App\Imports\NamesImport;
+use App\Http\Requests\NameFormRequest;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Name;
 
@@ -92,14 +95,19 @@ class NameController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //
+    }
+
+    public function file(Request $request) {
+        $rules = [
+            'file' => 'required'
+        ];
+
+        $request->validate($rules);
+
+        $file = Excel::toArray(new NamesImport, request()->file('file'))[0];
+        dd($file);
     }
 }

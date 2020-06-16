@@ -5,6 +5,23 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
+                    <div class="card-title">Subir archivo</div>
+                </div>
+                <div class="card-body">
+                    {{ Form::open(['route' => 'names.file', 'method' => 'POST', 'files' => true]) }}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ Form::bsFile('file') }}
+                                {{ Form::submit('Subir archivo', ['class' => 'btn btn-success btn-sm']) }}
+                            </div>
+                        </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-header">
                     <div class="card-title">Nombres</div>
                     <div class="card-options">
                         <a href="{{ route('names.create') }}" class="btn btn-success btn-sm">Nuevo <i class="fas fa-plus"></i></a>

@@ -15,6 +15,6 @@ class AppServiceProvider extends ServiceProvider
     {
         \Form::component('bsText', 'components.form.text', ['name', 'value' => null, 'attributes' => []]);
         \Form::component('bsPassword', 'components.form.password', ['name']);
-
+        \Form::component('bsFile', 'components.form.file', ['name', 'attributes' => []]);
     }
 }
