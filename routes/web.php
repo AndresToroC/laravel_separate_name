@@ -7,7 +7,8 @@ Route::get('/', function(){
 Auth::routes(['register' => true]);
 
 Route::group(['middleware' => 'auth'], function() {
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('home', 'HomeController@index')->name('home');
+    Route::resource('names', 'NameController');
 });
 
 Route::get('/logout', function() {
