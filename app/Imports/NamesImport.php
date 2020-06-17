@@ -2,15 +2,15 @@
 
 namespace App\Imports;
 
-use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
+use App\Name;
 
 class NamesImport implements ToModel
 {
     public function model(array $row)
     {
-        return [
+        return new Name([
            'names' => $row['names']
-        ];
+        ]);
     }
 }

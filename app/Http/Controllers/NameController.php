@@ -9,8 +9,11 @@ use GuzzleHttp\Client;
 use Session;
 
 use App\Imports\NamesImport;
-use App\Http\Requests\NameFormRequest;
+use App\Exports\NamesExport;
 use Maatwebsite\Excel\Facades\Excel;
+
+use App\Http\Requests\NameFormRequest;
+use App\Helper\NameApi;
 
 use App\Name;
 
@@ -30,48 +33,11 @@ class NameController extends Controller
 
     public function store(NameFormRequest $request)
     {
-        $client = new Client();
-        $url = 'http://rc50-api.nameapi.org/rest/v5.0/parser/personnameparser?apiKey=43883e18f8bc747a98da48ca4db32786-user1';
+        $names = $request->names;
+        $apiName = new NameApi($names);
+        $response = $apiName->names();
 
-        $json = [
-            'inputPerson'=>[
-                'type'=>'NaturalInputPerson',
-                'personName'=>[
-                    'nameFields'=>[[
-                        'string'=> $request->names,
-                        'fieldType'=>'FULLNAME'
-                    ]]
-                ]
-            ]
-        ];
-        
-        try {
-            $res = $client->request('POST', $url, ['json'=>$json]);
-            $data = json_decode($res->getBody());
-            $terms = $data->matches[0]->parsedPerson->outputPersonName->terms;
-            
-            $first_names = [];
-            $last_names = [];
-            foreach ($terms as $term) {
-                if($term->termType == 'GIVENNAME'){
-                    $first_names[] = $term->string;
-                }else{
-                    $last_names[] = $term->string;
-                }
-            }
-            
-            Name::create([
-                'names' => $request->names,
-                'first_name' => implode(" ", $first_names),
-                'last_name' => implode(" ", $last_names)
-            ]);
-
-            $message = ['type' => 'success', 'text' => 'Nombre agregado correctamente'];
-        } catch (\Throwable $th) {
-            $message = ['type' => 'danger', 'text' => 'Error al agregar nombre'];
-        }
-
-        Session::flash('message', $message);
+        Session::flash('message', $response['message']);
         return redirect()->back();
     }
     
@@ -107,7 +73,8 @@ class NameController extends Controller
 
         $request->validate($rules);
 
-        $file = Excel::toArray(new NamesImport, request()->file('file'))[0];
-        dd($file);
+        $rows = Excel::toArray(null, request()->file('file'))[0];
+        
+        return Excel::download(new NamesExport($rows), 'names.xlsx');
     }
 }
