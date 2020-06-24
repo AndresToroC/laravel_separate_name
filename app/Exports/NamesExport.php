@@ -24,10 +24,10 @@ class NamesExport implements WithMultipleSheets
         foreach ($this->rows as $key => $row) {
             $nameApi = new NameApi(implode("", $row));
             $response = $nameApi->names();
-
-            $names[] = $response['name'];
+            
+            $names[] = [$response['name']->names, $response['name']->first_name, $response['name']->last_name];
         }
-
+        
         $headding = ['Names', 'First name', 'Last name'];
         
         return [

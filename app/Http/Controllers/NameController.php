@@ -67,14 +67,32 @@ class NameController extends Controller
     }
 
     public function file(Request $request) {
+        // Se destruye variable "excel"
+        session()->forget('excel');
+
         $rules = [
             'file' => 'required'
         ];
 
         $request->validate($rules);
 
-        $rows = Excel::toArray(null, request()->file('file'))[0];
+        $rows = Excel::toArray(new NamesImport, request()->file('file'))[0];
+
+        $message = ['type' => 'success', 'text' => 'El excel esta listo para ser descargado'];
+        Session::flash('message', $message);
+
+        $excel = ['text' => 'excel'];
+        Session::flash('excel', $excel);
+
+        // Se crea variable "excel"
+        session(['excelDownload' => new NamesExport($rows)]);
         
-        return Excel::download(new NamesExport($rows), 'names.xlsx');
+        return redirect()->back();
+    }
+
+    public function excelDownload() {
+        $excel = session('excelDownload');
+        
+        return Excel::download($excel, 'Names.xlsx');
     }
 }

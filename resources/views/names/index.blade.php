@@ -8,14 +8,21 @@
                     <div class="card-title">Subir archivo</div>
                 </div>
                 <div class="card-body">
-                    {{ Form::open(['route' => 'names.file', 'method' => 'POST', 'files' => true]) }}
-                        <div class="row">
-                            <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ Form::open(['route' => 'names.file', 'method' => 'POST', 'files' => true]) }}
                                 {{ Form::bsFile('file') }}
-                                {{ Form::submit('Subir archivo', ['class' => 'btn btn-success btn-sm']) }}
-                            </div>
+                                {{ Form::button('Subir excel  <i class="fas fa-upload"></i>', ['type' => 'submit', 'class' => 'btn btn-success btn-sm']) }}
+                            {{ Form::close() }}
                         </div>
-                    {{ Form::close() }}
+                        <div class="col-md-2 text-right">
+                            @if (Session::has('excel'))
+                                {{ Form::open(['route' => 'names.download', 'method' => 'GET']) }}
+                                    {{ Form::button('Descargar <i class="fas fa-download"></i>', ['type' => 'submit', 'class' => 'btn btn-primary btn-sm']) }}
+                                {{ Form::close() }}
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
 
