@@ -19,6 +19,8 @@ use App\Name;
 
 class NameController extends Controller
 {
+    private $excelDownload;
+    
     public function index(Request $request)
     {
         $names = Name::searchAndPaginate();
@@ -76,7 +78,7 @@ class NameController extends Controller
 
         $request->validate($rules);
 
-        $rows = Excel::toArray(new NamesImport, request()->file('file'))[0];
+        $names = Excel::toArray(new NamesImport, request()->file('file'))[0];
 
         $message = ['type' => 'success', 'text' => 'El excel esta listo para ser descargado'];
         Session::flash('message', $message);
@@ -84,6 +86,14 @@ class NameController extends Controller
         $excel = ['text' => 'excel'];
         Session::flash('excel', $excel);
 
+        $rows = [];
+        foreach ($names as $key => $name) {
+            $nameApi = new NameApi(implode("", $name));
+            $response = $nameApi->names();
+            
+            $rows[] = [$response['name']->names, $response['name']->first_name, $response['name']->last_name];
+        }
+        
         // Se crea variable "excel"
         session(['excelDownload' => new NamesExport($rows)]);
         

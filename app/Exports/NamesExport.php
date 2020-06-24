@@ -5,14 +5,14 @@ namespace App\Exports;
 use App\Helper\NameApi;
 use App\Exports\Sheets;
 
-// use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class NamesExport implements WithMultipleSheets
 {
-    // use Exportable;
+    use Exportable;
 
-    private $rows;
+    private $rows = [];
 
     public function __construct($rows = null) {
         $this->rows = $rows;
@@ -20,18 +20,10 @@ class NamesExport implements WithMultipleSheets
 
     public function sheets(): array
     {
-        $names = [];
-        foreach ($this->rows as $key => $row) {
-            $nameApi = new NameApi(implode("", $row));
-            $response = $nameApi->names();
-            
-            $names[] = [$response['name']->names, $response['name']->first_name, $response['name']->last_name];
-        }
-        
         $headding = ['Names', 'First name', 'Last name'];
         
         return [
-            new Sheets($names, $headding, 'Names')
+            new Sheets($this->rows, $headding, 'Names')
         ];
     }
 }
